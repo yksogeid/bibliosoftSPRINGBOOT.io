@@ -45,7 +45,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Usuario usuario = usuarioRepositorio.findByEmail(username);
 		if(usuario == null) {
-			throw new UsernameNotFoundException("Usuario o password inválidos");
+			throw new UsernameNotFoundException("Usuario o contraseña incorrectos inválidos");
 		}
 		return new User(usuario.getEmail(),usuario.getPassword(), mapearAutoridadesRoles(usuario.getRoles()));
 	}
