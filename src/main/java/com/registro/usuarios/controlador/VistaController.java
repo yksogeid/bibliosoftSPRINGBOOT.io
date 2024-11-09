@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class VistaController {
     @GetMapping("/")
     public String home() {
-        // Redirige a la vista "usuarios.html"
-        return "index";
+        return "inicio";
     }
     @GetMapping("/libros")
     public String gestionarLibros() {
-        // Redirige a la vista "libros.html"
         return "gestLibros";
     }
 }
