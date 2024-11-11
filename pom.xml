@@ -8,11 +8,11 @@
 		<version>2.5.7</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.registro.usuarios</groupId>
-	<artifactId>com.registro.usuarios</artifactId>
+	<groupId>com.yksogeid.bibliotrack</groupId>
+	<artifactId>com.yksogeid.bibliotrack</artifactId>
 	<version>1.0</version>
-	<name>registro-usuarios-spring-security</name>
-	<description>Demo project for Spring Boot</description>
+	<name>bibliotrack-sistema-biblioteca-springboot</name>
+	<description>Sistema de inventario para biblioteca</description>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
