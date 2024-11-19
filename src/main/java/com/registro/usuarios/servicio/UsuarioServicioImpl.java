@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.registro.usuarios.controlador.dto.UsuarioRegistroDTO;
+import com.registro.usuarios.modelo.CustomUserDetails;
 import com.registro.usuarios.modelo.Rol;
 import com.registro.usuarios.modelo.Usuario;
 import com.registro.usuarios.repositorio.UsuarioRepositorio;
@@ -42,13 +43,19 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Usuario usuario = usuarioRepositorio.findByEmail(username);
-		if(usuario == null) {
-			throw new UsernameNotFoundException("Usuario o contraseña incorrectos inválidos");
-		}
-		return new User(usuario.getEmail(),usuario.getPassword(), mapearAutoridadesRoles(usuario.getRoles()));
-	}
+public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    Usuario usuario = usuarioRepositorio.findByEmail(username);
+    if (usuario == null) {
+        throw new UsernameNotFoundException("Usuario o contraseña incorrectos");
+    }
+
+    // Concatenar nombre y apellido
+    String fullName = usuario.getNombre() + " " + usuario.getApellido();
+
+    // Retornar el usuario con nombre completo
+    return new CustomUserDetails(usuario.getEmail(), usuario.getPassword(), mapearAutoridadesRoles(usuario.getRoles()), fullName);
+}
+
 
 	private Collection<? extends GrantedAuthority> mapearAutoridadesRoles(Collection<Rol> roles){
 		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getNombre())).collect(Collectors.toList());

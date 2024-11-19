@@ -13,5 +13,13 @@ public class VistaController {
     public String gestionarLibros() {
         return "gestLibros";
     }
+    @GetMapping("/prestamos")
+    public String gestPrestamos() {
+        return "prestamos";
+    }
+    @GetMapping("/reportes")
+    public String gestReportes() {
+        return "reportes";
+    }
 }
 
