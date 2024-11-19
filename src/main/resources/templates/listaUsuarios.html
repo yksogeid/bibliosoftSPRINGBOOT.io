@@ -69,7 +69,6 @@
       <table class="table table-borderless table-hover">
         <thead class="bg-primary text-white">
           <tr>
-            <th scope="col">ID</th>
             <th scope="col">Nombre</th>
             <th scope="col">Apellido</th>
             <th scope="col">Email</th>
@@ -78,7 +77,6 @@
         </thead>
         <tbody>
           <tr th:each="usuario : ${usuarios}" class="bg-light shadow-sm rounded mb-3">
-            <td th:text="${usuario.id}">ID</td>
             <td th:text="${usuario.nombre}">Nombre</td>
             <td th:text="${usuario.apellido}">Apellido</td>
             <td th:text="${usuario.email}">Email</td>
