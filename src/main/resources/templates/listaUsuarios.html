@@ -98,7 +98,7 @@
                 data-bs-toggle="modal"
                 data-bs-target="#deleteModal"
                 th:attr="data-id=${usuario.id}"
-              >
+                th:if="${#authentication.principal.rol == 'ROLE_ADMIN'}">
                 <i class="bi bi-trash"></i> Eliminar
               </button>
             </td>

@@ -11,13 +11,15 @@ public class CustomUserDetails implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
     private String fullName;
+    private String rol;
 
     // Constructor
-    public CustomUserDetails(String email, String password, Collection<? extends GrantedAuthority> authorities, String fullName) {
+    public CustomUserDetails(String email, String password, Collection<? extends GrantedAuthority> authorities, String fullName, String rol) {
         this.email = email;
         this.password = password;
         this.authorities = authorities;
         this.fullName = fullName;
+        this.rol = rol;
     }
 
     // Métodos de la interfaz UserDetails
@@ -58,5 +60,9 @@ public class CustomUserDetails implements UserDetails {
 
     public String getFullName() {
         return fullName;
+    }
+
+    public String getRol() {
+        return rol;
     }
 }

@@ -37,26 +37,32 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authenticationProvider());
 	}
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers(
-				"/registro**",
-				"/js/**",
-				"/css/**",
-				"/img/**").permitAll()
-		.anyRequest().authenticated()
-		.and()
-		.formLogin()
-		.loginPage("/login")
-		.permitAll()
-		.and()
-		.logout()
-		.invalidateHttpSession(true)
-		.clearAuthentication(true)
-		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-		.logoutSuccessUrl("/login?logout")
-		.permitAll();
+		http.authorizeRequests()
+				// Rutas accesibles sin autenticación
+				.antMatchers("/registro**", "/js/**", "/css/**", "/img/**").permitAll()
+				
+				// Ruta accesible solo para usuarios con rol "ROLE_USER"
+				.antMatchers("/reportes/**").hasRole("ADMIN")  // Solo ROLE_USER puede acceder a "/reportes"
+				
+				// Cualquier otra ruta necesita autenticación
+				.anyRequest().authenticated()
+			.and()
+			.formLogin()
+				.loginPage("/login")
+				.permitAll()
+			.and()
+			.logout()
+				.invalidateHttpSession(true)
+				.clearAuthentication(true)
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+				.logoutSuccessUrl("/login?logout")
+				.permitAll()
+			.and()
+			.exceptionHandling()
+				.accessDeniedPage("/notienepermisos.html"); // Redirige a "notienepermisos.html" si no tiene permiso
 	}
 }
 

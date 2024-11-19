@@ -43,19 +43,40 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    Usuario usuario = usuarioRepositorio.findByEmail(username);
-    if (usuario == null) {
-        throw new UsernameNotFoundException("Usuario o contraseña incorrectos");
-    }
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		// Cargar el usuario desde la base de datos usando el email como nombre de usuario
+		Usuario usuario = usuarioRepositorio.findByEmail(username);
+		
+		if (usuario == null) {
+			throw new UsernameNotFoundException("Usuario o contraseña incorrectos");
+		}
+	
+		// Concatenar nombre y apellido
+		String fullName = usuario.getNombre() + " " + usuario.getApellido();
+		
+	
+		// Mapear roles a autoridades (authorities)
+		List<GrantedAuthority> authorities = (List<GrantedAuthority>) mapearAutoridadesRoles(usuario.getRoles());
 
-    // Concatenar nombre y apellido
-    String fullName = usuario.getNombre() + " " + usuario.getApellido();
+		String rol = authorities.stream()
+                            .map(GrantedAuthority::getAuthority)
+                            .findFirst() // Obtener el primer rol (asumiendo que el usuario tiene un rol asignado)
+                            .orElse("SIN_ROL)");
+	
+		// Imprimir en consola los datos
+		System.out.println("Email: " + usuario.getEmail());
+		System.out.println("Nombre completo: " + fullName);
+		System.out.println("Roles: " + authorities.stream()
+			.map(GrantedAuthority::getAuthority) // Extraer solo el nombre del rol
+			.sorted() // Ordenar los roles alfabéticamente
+			.collect(Collectors.joining(", ")));
+			System.out.println("Rol asignado: " + rol); // Imprimir el rol
 
-    // Retornar el usuario con nombre completo
-    return new CustomUserDetails(usuario.getEmail(), usuario.getPassword(), mapearAutoridadesRoles(usuario.getRoles()), fullName);
-}
-
+	
+		// Retornar el usuario con nombre completo y sus roles (authorities)
+		return new CustomUserDetails(usuario.getEmail(), usuario.getPassword(), authorities, fullName, rol);
+	}
+	
 
 	private Collection<? extends GrantedAuthority> mapearAutoridadesRoles(Collection<Rol> roles){
 		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getNombre())).collect(Collectors.toList());
