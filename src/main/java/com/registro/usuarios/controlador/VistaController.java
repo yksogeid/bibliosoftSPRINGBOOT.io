@@ -9,7 +9,7 @@ public class VistaController {
     public String home() {
         return "inicio";
     }
-    @GetMapping("/libros")
+    @GetMapping("/gestLibros")
     public String gestionarLibros() {
         return "gestLibros";
     }

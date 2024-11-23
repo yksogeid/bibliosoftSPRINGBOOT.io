@@ -1,6 +1,11 @@
 package com.registro.usuarios.modelo;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "libros")
@@ -10,14 +15,16 @@ public class Libro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 255) // Define restricciones en la columna
     private String titulo;
+    private String isbn;
+    private int anioPublicacion;
+    private double precio;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Relación Many-to-One con carga perezosa
-    @JoinColumn(name = "autor_id", nullable = false) // Clave foránea, no nula
+    @ManyToOne
+    private Editorial editorial;
+
+    @ManyToOne
     private AutorModelo autor;
-
-    private Integer cantidad;
 
     // Getters y Setters
     public Long getId() {
@@ -36,6 +43,38 @@ public class Libro {
         this.titulo = titulo;
     }
 
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public int getAnioPublicacion() {
+        return anioPublicacion;
+    }
+
+    public void setAnioPublicacion(int anioPublicacion) {
+        this.anioPublicacion = anioPublicacion;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public Editorial getEditorial() {
+        return editorial;
+    }
+
+    public void setEditorial(Editorial editorial) {
+        this.editorial = editorial;
+    }
+
     public AutorModelo getAutor() {
         return autor;
     }
@@ -43,14 +82,4 @@ public class Libro {
     public void setAutor(AutorModelo autor) {
         this.autor = autor;
     }
-
-    public Integer getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(Integer cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    
 }
