@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -16,7 +18,6 @@ public class UsuarioControlador {
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
 
-    // Método para actualizar el usuario
     @PostMapping("/actualizar")
     public String actualizarUsuario(Usuario usuario) {
         Optional<Usuario> usuarioExistente = usuarioRepositorio.findById(usuario.getId());
@@ -33,32 +34,40 @@ public class UsuarioControlador {
     }
 
     @PostMapping("/eliminar")
-public String eliminarUsuario(Long id) {
-    // Busca al usuario en la base de datos por su ID
-    Optional<Usuario> usuarioOpt = usuarioRepositorio.findById(id);
-    
-    // Si el usuario existe
-    if (usuarioOpt.isPresent()) {
-        Usuario usuario = usuarioOpt.get();
-        
-        // Verifica si el usuario tiene el rol 'ROLE_ADMIN'
-        boolean tieneRolAdmin = usuario.getRoles().stream()
-                                      .anyMatch(rol -> rol.getNombre().equals("ROLE_ADMIN"));  // Cambia 'getNombre' por el método adecuado si es necesario
-
-        // Si el usuario tiene el rol 'ROLE_ADMIN', redirige con un mensaje de error
-        if (tieneRolAdmin) {
-            return "redirect:/usuarios?prohibido";
+    public String eliminarUsuario(Long id) {
+        Optional<Usuario> usuarioOpt = usuarioRepositorio.findById(id);
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            
+            boolean tieneRolAdmin = usuario.getRoles().stream()
+                                          .anyMatch(rol -> rol.getNombre().equals("ROLE_ADMIN"));
+            
+            if (tieneRolAdmin) {
+                return "redirect:/usuarios?prohibido";
+            }
+            
+            usuario.getRoles().clear();  
+            usuarioRepositorio.save(usuario);  
+            usuarioRepositorio.deleteById(id);
+            return "redirect:/usuarios?eliminado";
         }
-        
-        // Si no tiene el rol 'ROLE_ADMIN', se procede a eliminar
-        usuarioRepositorio.deleteById(id);
-        return "redirect:/usuarios?eliminado";
+        return "redirect:/usuarios?no_encontrado";
     }
     
-    // Redirige con mensaje de error si el usuario no existe
-    return "redirect:/usuarios?error=noencontrado";
-}
+    @PostMapping("/crear")
+    public String crearUsuario(Usuario usuario) {
+        Optional<Usuario> usuarioExistente = Optional.ofNullable(usuarioRepositorio.findByEmail(usuario.getEmail()));
+    
+        if (usuarioExistente.isPresent()) {
+            return "redirect:/usuarios?error=existe";
+        }
 
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String passwordEncriptada = passwordEncoder.encode(usuario.getPassword());
+            usuario.setPassword(passwordEncriptada);
+            usuarioRepositorio.save(usuario);
+        return "redirect:/usuarios?creado";
+    }
     
     
 }
