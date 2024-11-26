@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Estudiantes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Gestión de Estudiantes</h1>
+
+        <!-- Botón para abrir el modal de creación -->
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#crearEstudianteModal">Agregar Estudiante</button>
+
+        <!-- Tabla de estudiantes -->
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Tipo DOC</th>
+                    <th>Documento</th>
+                    <th>Email</th>
+                    <th>Teléfono 1</th>
+                    <th>Teléfono 2</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="estudiante : ${estudiantes}">
+                    <td th:text="${estudiante.nombre}"></td>
+                    <td th:text="${estudiante.apellido}"></td>
+                    <td th:text="${estudiante.tipodoc}"></td>
+                    <td th:text="${estudiante.documento}"></td>
+                    <td th:text="${estudiante.email}"></td>
+                    <td th:text="${estudiante.num1}"></td>
+                    <td th:text="${estudiante.num2}"></td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#eliminarEstudianteModal" 
+                                th:attr="data-id=${estudiante.id}" 
+                                onclick="setEliminarId(this)">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal para crear estudiante -->
+    <div class="modal fade" id="crearEstudianteModal" tabindex="-1" aria-labelledby="crearEstudianteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/estudiantes/crear" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="crearEstudianteModalLabel">Crear Estudiante</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="apellido" class="form-label">Apellido</label>
+                            <input type="text" class="form-control" id="apellido" name="apellido" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipodoc" class="form-label">Tipo de Documento</label>
+                            <input type="text" class="form-control" id="tipodoc" name="tipodoc" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="documento" class="form-label">Documento</label>
+                            <input type="text" class="form-control" id="documento" name="documento" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="num1" class="form-label">Teléfono 1</label>
+                            <input type="text" class="form-control" id="num1" name="num1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="num2" class="form-label">Teléfono 2</label>
+                            <input type="text" class="form-control" id="num2" name="num2">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para eliminar estudiante -->
+    <div class="modal fade" id="eliminarEstudianteModal" tabindex="-1" aria-labelledby="eliminarEstudianteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="eliminarEstudianteForm" action="" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="eliminarEstudianteModalLabel">Eliminar Estudiante</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás seguro de que deseas eliminar este estudiante?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function setEliminarId(button) {
+            const id = button.getAttribute("data-id");
+            const form = document.getElementById("eliminarEstudianteForm");
+            form.setAttribute("action", `/estudiantes/eliminar/${id}`);
+        }
+    </script>
+</body>
+</html>

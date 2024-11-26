@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inicio</title>
+
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+  <div th:replace="fragments :: header"></div>
+  <div style="margin-top: 70px"></div>
+
+  <!-- Contenedor principal -->
+  <div class="container my-5">
+    <h1 class="display-4 text-primary text-center">Gestión de estudiantes</h1>
+    <p class="lead text-secondary text-center">Desde aquí puedes editar, actualizar y eliminar estudiantes.</p>
+    <hr class="my-4" />
+
+    <div class="container mt-3">
+        <!-- Notificación de Éxito (Usuario eliminado) -->
+        <div th:if="${param.eliminado}" class="alert alert-success d-flex align-items-center justify-content-between border-0 shadow-lg p-4 mb-3 position-relative fade show" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill fs-4 text-success"></i>
+                <span class="ms-3 mb-0">Usuario eliminado correctamente.</span>
+            </div>
+            <button type="button" class="btn-close position-absolute top-0 end-0 mt-2 me-2" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    
+        <!-- Notificación de Éxito (Usuario actualizado) -->
+        <div th:if="${param.exito}" class="alert alert-success d-flex align-items-center justify-content-between border-0 shadow-lg p-4 mb-3 position-relative fade show" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill fs-4 text-success"></i>
+                <span class="ms-3 mb-0">Usuario actualizado correctamente.</span>
+            </div>
+            <button type="button" class="btn-close position-absolute top-0 end-0 mt-2 me-2" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+
+        <!-- Notificación de Advertencia (Usuario administrador) -->
+        <div th:if="${param.prohibido}" class="alert alert-warning d-flex align-items-center justify-content-between border-0 shadow-lg p-4 mb-3 position-relative fade show" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill fs-4 text-warning"></i>
+                <span class="ms-3 mb-0">No puedes eliminar un administrador.</span>
+            </div>
+            <button type="button" class="btn-close position-absolute top-0 end-0 mt-2 me-2" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+        
+        <!-- Notificación de Error (Usuario no encontrado) -->
+        <div th:if="${param.error == 'noencontrado'}" class="alert alert-danger d-flex align-items-center justify-content-between border-0 shadow-lg rounded-5 p-4 mb-3 position-relative fade show" role="alert">
+            <i class="bi bi-x-circle-fill fs-4 text-danger"></i>
+            <span class="ms-3 mb-0">Usuario no encontrado.</span>
+            <button type="button" class="btn-close position-absolute top-0 end-0 mt-2 me-2" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearUsuarioModal" th:if="${#authentication.principal.rol == 'ROLE_ADMIN'}">Nuevo Usuario</button>
+
+    <!-- Tabla de usuarios -->
+    <div class="table-responsive mt-4">
+      <table class="table table-borderless table-hover table-bordered">
+        <thead class="bg-primary text-white">
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellido</th>
+            <th scope="col">Email</th>
+            <th scope="col">Tipo Documento</th>
+            <th scope="col">Documento</th>
+            <th scope="col">Numero 1</th>
+            <th scope="col">Numero 2</th>
+            <th scope="col">Acciones</th>
+
+        </thead>
+        <tbody>
+          <tr th:each="estudiante : ${estudiantes}" class="bg-light shadow-sm rounded mb-3">
+            <td th:text="${estudiante.nombre}">Nombre</td>
+            <td th:text="${estudiante.apellido}">Apellido</td>
+            <td th:text="${estudiante.email}">Email</td>
+            <td th:text="${estudiante.tipodoc}">Tipo Documento</td>
+            <td th:text="${estudiante.documento}">Documento</td>
+            <td th:text="${estudiante.num1}">Numero 1</td>
+            <td th:text="${estudiante.num2}">Numero 2</td>
+            <td>   
+              <button
+              class="btn btn-outline-primary btn-sm"
+              data-bs-toggle="modal"
+              data-bs-target="#editModal"
+              th:attr="data-id=${estudiante.id}, data-nombre=${estudiante.nombre}, data-apellido=${estudiante.apellido}, data-email=${estudiante.email}, data-tipodoc=${estudiante.tipodoc}, data-documento=${estudiante.documento}, data-num1=${estudiante.num1}, data-num2=${estudiante.num2}">
+              <i class="bi bi-pencil-square"></i> Editar
+            </button>
+              
+              <!-- Botón de Eliminar -->
+              <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                      th:attr="data-id=${estudiante.id}" th:if="${#authentication.principal.rol == 'ROLE_ADMIN'}">
+                <i class="bi bi-trash"></i> Eliminar
+              </button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal para Eliminar Estudiante -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Eliminar Usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p>¿Estás seguro de que deseas eliminar este usuario?</p>
+          <p>Esta acción es irreversible.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <form th:action="@{/estudiantes/eliminar}" method="post">
+            <input type="hidden" id="delete-id" name="id" />
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Modal para Crear Nuevo Usuario -->
+    <div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-labelledby="crearUsuarioModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="crearUsuarioModalLabel">Crear Nuevo Estudiante</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Formulario para el nuevo usuario -->
+            <form th:action="@{/estudiantes/crear}" method="POST">
+              <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required />
+              </div>
+              <div class="mb-3">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" class="form-control" id="apellido" name="apellido" required />
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input type="email" class="form-control" id="email" name="email" required />
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password" name="password" required />
+              </div>
+              <div class="mb-3">
+                <label for="tipodoc" class="form-label">Tipo de Documento</label>
+                <select class="form-control" id="tipodoc" name="tipodoc" required>
+                  <option value="" disabled selected>Seleccione el tipo de documento</option>
+                  <option value="CC">Cédula de Ciudadanía (CC)</option>
+                  <option value="TI">Tarjeta de Identidad (TI)</option>
+                  <option value="CE">Cédula de Extranjería (CE)</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="documento" class="form-label">Documento</label>
+                <input type="documento" class="form-control" id="documento" name="documento" required />
+              </div>
+              <div class="mb-3">
+                <label for="num1" class="form-label">Numero 1</label>
+                <input type="num1" class="form-control" id="num1" name="num1" required />
+              </div>
+              <div class="mb-3">
+                <label for="num2" class="form-label">Numero 2</label>
+                <input type="num2" class="form-control" id="nunum2m1" name="num2" required />
+              </div>
+              
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary">Crear</button>
+          </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+
+<!-- Modal para Editar Autor -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Editar Autor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editForm" th:action="@{/estudiantes/actualizar/}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id" id="editId">
+          <div class="mb-3">
+            <label for="editNombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="editNombre" name="nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="editApellido" class="form-label">Apellido</label>
+            <input type="text" class="form-control" id="editApellido" name="apellido" required>
+          </div>
+          <div class="mb-3">
+            <label for="editEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="editEmail" name="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="editTipoDoc" class="form-label">Tipo de documento</label>
+            <input type="text" class="form-control" id="editTipoDoc" name="tipodoc" required>
+          </div>
+          <div class="mb-3">
+            <label for="editDocumento" class="form-label">Documento</label>
+            <input type="number" class="form-control" id="editDocumento" name="documento" required>
+          </div>
+          <div class="mb-3">
+            <label for="editNum1" class="form-label">Numero 1</label>
+            <input type="number" class="form-control" id="editNum1" name="num1" required>
+          </div>
+          <div class="mb-3">
+            <label for="editNum2" class="form-label">Numero 2</label>
+            <input type="number" class="form-control" id="editNum2" name="num2" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+  <!-- Bootstrap 5.3 JS -->
+  <script src="/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+ // Llenar datos en el modal de edición
+ const editModal = document.getElementById('editModal');
+    editModal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      const id = button.getAttribute('data-id');
+      const nombre = button.getAttribute('data-nombre');
+      const apellido = button.getAttribute('data-apellido');
+      const email = button.getAttribute('data-email');
+      const tipodoc = button.getAttribute('data-tipodoc');
+      const documento = button.getAttribute('data-documento');
+      const num1 = button.getAttribute('data-num1');
+      const num2 = button.getAttribute('data-num2');
+
+      
+      document.getElementById('editId').value = id;
+      document.getElementById('editNombre').value = nombre;
+      document.getElementById('editApellido').value = apellido;
+      document.getElementById('editEmail').value = email;
+      document.getElementById('editTipoDoc').value = tipodoc;
+      document.getElementById('editDocumento').value = documento;
+      document.getElementById('editNum1').value = num1;
+      document.getElementById('editNum2').value = num2;
+  
+      const form = document.getElementById('editForm');
+      form.action = `/estudiantes/actualizar/${id}`;
+    });
+   var deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget;
+      var id = button.getAttribute('data-id');
+      var modalId = deleteModal.querySelector('#delete-id');
+      modalId.value = id;
+    });
+  </script>
+</body>
+</html>
