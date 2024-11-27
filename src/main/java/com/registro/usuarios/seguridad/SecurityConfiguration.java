@@ -42,7 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				// Rutas accesibles sin autenticación
-				.antMatchers("/registro**","/registerStudent","/js/**", "/css/**", "/img/**").permitAll()
+				.antMatchers("/register/**","/estudiantes/registerStudent","/js/**", "/css/**", "/img/**").permitAll()
 				
 				// Ruta accesible solo para usuarios con rol "ROLE_USER"
 				.antMatchers("/reportes/**").hasRole("ADMIN")  // Solo ROLE_USER puede acceder a "/reportes"

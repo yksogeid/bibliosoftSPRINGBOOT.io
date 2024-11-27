@@ -62,7 +62,6 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Título</th>
                     <th>ISBN</th>
                     <th>Año</th>
@@ -74,7 +73,6 @@
             </thead>
             <tbody>
                 <tr th:each="libro : ${libros}">
-                    <td th:text="${libro.id}"></td>
                     <td th:text="${libro.titulo}"></td>
                     <td th:text="${libro.isbn}"></td>
                     <td th:text="${libro.anioPublicacion}"></td>
@@ -254,6 +252,8 @@
       modalId.value = id;
     });
   </script>
-   <div th:replace="fragments :: footer"></div>
 </body>
+<!-- Incluir el fragmento de Footer -->
+<div th:replace="fragments :: footer"></div>
+
 </html>

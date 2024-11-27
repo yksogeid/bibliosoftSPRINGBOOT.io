@@ -11,7 +11,9 @@
 <body>
 
 
-
+    <div th:if="${param.exito}" class="alert alert-success mt-3" role="alert">
+        Estudiante creado exitosamente.
+    </div>
     <!-- Espacio para ajustar la página con la barra de navegación fija -->
     <div style="margin-top: 70px;"></div>
 
@@ -45,7 +47,7 @@
 
                 <!-- Link de registro -->
                 <div class="text-center mt-4">
-                    <span>¿Eres nuevo usuario? <a th:href="@{/registro}">Regístrate aquí</a></span>
+                    <span>¿Eres nuevo estudiante? <a th:href="@{/register/student}">Regístrate aquí</a></span>
                 </div>
             </div>
         </div>
