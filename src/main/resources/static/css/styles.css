@@ -8,6 +8,13 @@
     top: 0;
     z-index: 2;
     background-color: #0074e9;
+    color: #ffffff; /* Texto blanco para mejor contraste */
+    padding: 10px; /* Espaciado interno para mejor legibilidad */
+    text-align: left; /* Alineación del texto a la izquierda */
+    border-bottom: 2px solid #005bb5; /* Línea inferior para separación */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para efecto de elevación */
+    font-weight: bold; /* Texto en negrita */
+    font-size: 1.1em; /* Tamaño de fuente ligeramente mayor */
 }
 
 .dashboard-btn {

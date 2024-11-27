@@ -28,50 +28,45 @@
     <hr class="my-4">
     <div class="row mt-4">
         <div class="col-md-4 mb-3">
-            <div class="card h-100">
+            <div class="card h-100 card-hover" onclick="location.href='/gestLibros'" style="cursor: pointer;">
                 <div class="card-body text-center">
                     <i class="bi bi-book display-4 text-primary"></i>
                     <h5 class="card-title mt-3">Gestionar Libros</h5>
-                    <a href="/gestLibros" class="btn btn-primary mt-3">Ir</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mb-3">
-            <div class="card h-100">
+            <div class="card h-100 card-hover" onclick="location.href='/usuarios'" style="cursor: pointer;">
                 <div class="card-body text-center">
                     <i class="bi bi-people display-4 text-success"></i>
                     <h5 class="card-title mt-3">Gestionar Usuarios</h5>
-                    <a href="/usuarios" class="btn btn-success mt-3">Ir</a>
                 </div>
             </div>
         </div>
+        
         <div class="col-md-4 mb-3" th:if="${#authentication.principal.rol == 'ROLE_ADMIN'}">
-            <div class="card h-100">
+            <div class="card h-100 card-hover" onclick="location.href='/reportes'" style="cursor: pointer;">
                 <div class="card-body text-center">
                     <i class="bi bi-bar-chart display-4 text-warning"></i>
                     <h5 class="card-title mt-3">Ver Reportes</h5>
-                    <a href="/reportes" class="btn btn-warning mt-3">Ir</a>
                 </div>
             </div>
         </div>
         
-        
-        
         <div class="col-md-4 mb-3">
-            <div class="card h-100">
+            <div class="card h-100 card-hover" onclick="location.href='/prestamos'" style="cursor: pointer;">
                 <div class="card-body text-center">
                     <i class="bi bi-bar-chart display-4 text-warning"></i>
                     <h5 class="card-title mt-3">Gestionar Prestamos</h5>
-                    <a href="/prestamos" class="btn btn-warning mt-3">Ir</a>
                 </div>
             </div>
         </div>
+        
         <div class="col-md-4 mb-3">
-            <div class="card h-100">
+            <div class="card h-100 card-hover" onclick="location.href='/estudiantes'" style="cursor: pointer;">
                 <div class="card-body text-center">
                     <i class="bi bi-bar-chart display-4 text-warning"></i>
                     <h5 class="card-title mt-3">Gestionar Estudiantes</h5>
-                    <a href="/estudiantes" class="btn btn-warning mt-3">Ir</a>
                 </div>
             </div>
         </div>

@@ -13,9 +13,9 @@ public class VistaController {
     public String gestionarLibros() {
         return "gestLibros";
     }
-    @GetMapping("/prestamos")
+    @GetMapping("/prestamoss")
     public String gestPrestamos() {
-        return "prestamos";
+        return "prestamos2";
     }
     @GetMapping("/reportes")
     public String gestReportes() {
